@@ -3,13 +3,15 @@ import { Injectable } from '@nestjs/common';
 import { v4 } from 'uuid';
 
 import { Cart } from '../models';
+import pool from 'src/database_connection';
 
 @Injectable()
 export class CartService {
   private userCarts: Record<string, Cart> = {};
 
-  findByUserId(userId: string): Cart {
-    return this.userCarts[ userId ];
+  async findByUserId(userId: string) {
+    const data = await pool.query(`SELECT * FROM carts WHERE user_id='${userId}'` ); 
+    return data.rows;
   }
 
   createByUserId(userId: string) {
